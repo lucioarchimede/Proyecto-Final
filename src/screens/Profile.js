@@ -1,5 +1,5 @@
-import React, { Component, useState } from 'react';
-import { Text, View, TouchableOpacity, StyleSheet, FlatList, Image, Modal, Pressable, Alert } from 'react-native';
+import React, { Component } from 'react';
+import { Text, View, TouchableOpacity, StyleSheet, FlatList, Image, Modal, Pressable } from 'react-native';
 import { auth, db } from '../firebase/config';
 import Posteo from '../components/Posteo';
 
@@ -7,7 +7,7 @@ export default class MiPerfil extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      usuarios: [],
+      usuario: null, //Esto hay que cambiarlo esta en Null pq no me anda 
       posteos: [],
       seleccionPosteoId: null,
       modalVisible: false,
@@ -15,22 +15,27 @@ export default class MiPerfil extends Component {
   }
 
   componentDidMount() {
+    this.obtenerDatosUsuario();
+    this.obtenerPosteosUsuario();
+  }
+
+  obtenerDatosUsuario() {
     db.collection('usuarios')
       .where('owner', '==', auth.currentUser.email)
       .onSnapshot((docs) => {
-        let datos = [];
+        let usuario = null;
         docs.forEach((doc) => {
-          datos.push({
+          usuario = {
             id: doc.id,
             data: doc.data(),
-          });
+          };
         });
-
-        this.setState({
-          usuarios: data,
-        });
+        console.log('Datos del usuario:', usuario);  // Depuración
+        this.setState({ usuario });
       });
+  }
 
+  obtenerPosteosUsuario() {
     db.collection('posteos')
       .where('owner', '==', auth.currentUser.email)
       .onSnapshot((docs) => {
@@ -42,6 +47,7 @@ export default class MiPerfil extends Component {
           });
         });
         data.sort((a, b) => b.data.createdAt - a.data.createdAt);
+        console.log('Posteos del usuario:', data);  // Depuración
         this.setState({
           posteos: data,
         });
@@ -52,8 +58,6 @@ export default class MiPerfil extends Component {
     try {
       await db.collection('posteos').doc(posteoId).delete();
       console.log('Posteo eliminado');
-
-      // Actualizar el estado después de borrar el posteo
       const updatedPosteos = this.state.posteos.filter(post => post.id !== posteoId);
       this.setState({
         posteos: updatedPosteos,
@@ -65,7 +69,6 @@ export default class MiPerfil extends Component {
   }
 
   borrarPosteo = (posteoId) => {
-    // Mostrar el modal de confirmación
     this.setState({
       seleccionPosteoId: posteoId,
       modalVisible: true,
@@ -73,7 +76,6 @@ export default class MiPerfil extends Component {
   }
 
   cerrarModal = () => {
-    // Cerrar el modal sin borrar el posteo
     this.setState({
       seleccionPosteoId: null,
       modalVisible: false,
@@ -86,7 +88,7 @@ export default class MiPerfil extends Component {
   }
 
   handleChangePassword = () => {
-    this.props.navigation.navigate('CambiarClave');
+    this.props.navigation.navigate('CambioClave');
   };
 
   handleEditProfile = () => {
@@ -94,34 +96,32 @@ export default class MiPerfil extends Component {
   };
 
   render() {
+    const { usuario, posteos } = this.state;
     return (
       <View style={styles.container}>
         <Text style={styles.postsTitle}>Tu perfil</Text>
-        <View style={styles.profileInfo}>
-
-          <FlatList
-            data={this.state.usuarios}
-            keyExtractor={(item) => item.id.toString()}
-            renderItem={({ item }) => (
-              <View>
-                <Text style={styles.username}>{item.data.nombre}</Text>
-                <Image source={{ uri: item.data.fotoPerfil }} style={styles.profileImage} />
-                <Text style={styles.mail}>{item.data.owner}</Text>
-                <Text style={styles.minibio}>{item.data.biografia}</Text>
-                <TouchableOpacity onPress={this.handleEditProfile}>
-                  <Text style={styles.editProfileButton}>Editar Perfil</Text>
-                </TouchableOpacity>
-              </View>
+        {usuario ? (
+          <View style={styles.profileInfo}>
+            <Text style={styles.username}>{usuario.data.name}</Text>
+            {usuario.data.fotoPerfil && (
+              <Image source={{ uri: usuario.data.fotoPerfil }} style={styles.profileImage} />
             )}
-          />
-        </View>
+            <Text style={styles.mail}>{usuario.data.owner}</Text>
+            <Text style={styles.minibio}>{usuario.data.miniBio}</Text>
+            <TouchableOpacity onPress={this.handleEditProfile}>
+              <Text style={styles.editProfileButton}>Editar Perfil</Text>
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <Text>Cargando...</Text>
+        )}
 
         <View style={styles.posts}>
           <Text style={styles.postsTitle}>Tus posteos</Text>
-          <Text style={styles.cantidadPosteos}>Posteos: {this.state.posteos.length}</Text>
+          <Text style={styles.cantidadPosteos}>Posteos: {posteos.length}</Text>
           <View style={styles.postsList}>
             <FlatList
-              data={this.state.posteos}
+              data={posteos}
               keyExtractor={(item) => item.id.toString()}
               renderItem={({ item }) => (
                 <View style={styles.post}>
@@ -136,7 +136,7 @@ export default class MiPerfil extends Component {
         </View>
 
         <View style={styles.changePasswordButton}>
-          <TouchableOpacity onPress={() => this.props.navigation.navigate('CambioClave')}>
+          <TouchableOpacity onPress={this.handleChangePassword}>
             <Text>Cambiar Contraseña</Text>
           </TouchableOpacity>
         </View>
@@ -152,7 +152,7 @@ export default class MiPerfil extends Component {
           transparent={true}
           visible={this.state.modalVisible}
           onRequestClose={() => {
-            this.closeModal();
+            this.cerrarModal();
           }}
         >
           <View style={styles.centeredView}>
@@ -178,143 +178,144 @@ export default class MiPerfil extends Component {
       </View>
     );
   }
-}const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      alignItems: 'center',
-      justifyContent: 'flex-start',
-      backgroundColor:"light blue",
-      padding: 10,
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    backgroundColor: "lightblue",
+    padding: 10,
+  },
+  profileInfo: {
+    alignItems: 'center',
+    padding: 10,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 10,
+    marginBottom: 20,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
     },
-    profileInfo: {
-      alignItems: 'center',
-      padding: 10,
-      backgroundColor: '#FFFFFF',
-      borderRadius: 10,
-      marginBottom: 20,
-      shadowColor: '#000',
-      shadowOffset: {
-        width: 0,
-        height: 2,
-      },
-      shadowOpacity: 0.25,
-      shadowRadius: 3.84,
-      elevation: 5,
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  mail: {
+    fontSize: 14,
+    color: 'gray',
+    textAlign: 'center',
+  },
+  profileImage: {
+    width: 200,
+    height: 200,
+    borderRadius: 100,
+  },
+  username: {
+    fontSize: 25,
+    fontWeight: 'bold',
+    marginVertical: 10,
+    textAlign: 'center',
+  },
+  minibio: {
+    fontSize: 14,
+    color: 'gray',
+    textAlign: 'center',
+  },
+  posts: {
+    flex: 1,
+    width: '100%',
+    marginTop: 20,
+  },
+  postsList: {
+    flex: 1,
+    width: '100%',
+  },
+  postsTitle: {
+    fontSize: 35,
+    fontWeight: 'bold',
+    fontFamily: 'calibri',
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+  post: {
+    width: '90%',
+    alignSelf: 'center',
+    marginBottom: 15,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 10,
+    padding: 15,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
     },
-    mail: {
-      fontSize: 14,
-      color: 'gray',
-      textAlign: 'center',
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  logout: {
+    marginVertical: 20,
+  },
+  cantidadPosteos: {
+    marginBottom: 15,
+  },
+  editProfileButton: {
+    color: 'black',
+    fontSize: 16,
+    fontWeight: 'bold',
+    textDecorationLine: 'none',
+    marginTop: 10,
+  },
+  changePasswordButton: {
+    marginTop: 10,
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
     },
-    profileImage: {
-      width: 200,
-      height: 200,
-      borderRadius: 100,
-    },
-    username: {
-      fontSize: 25,
-      fontWeight: 'bold',
-      marginVertical: 10,
-      textAlign: 'center',
-    },
-    minibio: {
-      fontSize: 14,
-      color: 'gray',
-      textAlign: 'center',
-    },
-    posts: {
-      flex: 1,
-      width: '100%',
-      marginTop: 20,
-    },
-    postsList: {
-      flex: 1,
-      width: '100%',
-    },
-    postsTitle: {
-      fontSize: 35,
-      fontWeight: 'bold',
-      fontFamily: 'calibri',
-      marginBottom: 15,
-      textAlign: 'center',
-    },
-    post: {
-      width: '90%', // Ajusta el ancho del post al 90% del contenedor
-      alignSelf: 'center', // Centra el post horizontalmente
-      marginBottom: 15,
-      backgroundColor: '#FFFFFF',
-      borderRadius: 10,
-      padding: 15,
-      shadowColor: '#000',
-      shadowOffset: {
-        width: 0,
-        height: 2,
-      },
-      shadowOpacity: 0.25,
-      shadowRadius: 3.84,
-      elevation: 5,
-    },
-    logout: {
-      marginVertical: 20,
-    },
-    cantidadPosteos: {
-      marginBottom: 15,
-    },
-    editProfileButton: {
-      color: 'black',
-      fontSize: 16,
-      fontWeight: 'bold',
-      textDecorationLine: 'none',
-      marginTop: 10,
-    },
-    changePasswordButton: {
-      marginTop: 10,
-    },
-    centeredView: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-      marginTop: 22,
-    },
-    modalView: {
-      margin: 20,
-      backgroundColor: 'white',
-      borderRadius: 20,
-      padding: 35,
-      alignItems: 'center',
-      shadowColor: '#000',
-      shadowOffset: {
-        width: 0,
-        height: 2,
-      },
-      shadowOpacity: 0.25,
-      shadowRadius: 4,
-      elevation: 5,
-    },
-    modalText: {
-      marginBottom: 15,
-      textAlign: 'center',
-    },
-    modalButtons: {
-      flexDirection: 'row',
-      justifyContent: 'space-around',
-      width: '100%',
-    },
-    button: {
-      borderRadius: 5,
-      padding: 10,
-      elevation: 2,
-    },
-    buttonClose: {
-      backgroundColor: '#2196F3',
-    },
-    buttonConfirm: {
-      backgroundColor: '#FF6347',
-    },
-    textStyle: {
-      color: 'white',
-      fontWeight: 'bold',
-      textAlign: 'center',
-    },
-  });
-  
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+  modalButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '100%',
+  },
+  button: {
+    borderRadius: 5,
+    padding: 10,
+    elevation: 2,
+  },
+  buttonClose: {
+    backgroundColor: '#2196F3',
+  },
+  buttonConfirm: {
+    backgroundColor: '#FF6347',
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+});

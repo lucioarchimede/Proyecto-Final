@@ -4,8 +4,8 @@ import {NavigationContainer} from "@react-navigation/native"
 import {createNativeStackNavigator} from "@react-navigation/native-stack"
 import Register from "../screens/Register"
 import Login from "../screens/Login"
+import Comentarios from "../screens/Comentarios"
 import TabNav from './TabNav'
-import Home from '../screens/Home'
 
 
 const Stack = createNativeStackNavigator();
@@ -23,6 +23,11 @@ const Stack = createNativeStackNavigator();
             <Stack.Screen
             options={{headerShow: false}}
              name='tabnav' component={TabNav} />
+             
+              <Stack.Screen
+          name='Comentarios'
+          component={Comentarios}
+        /> 
 
         </Stack.Navigator>
     </NavigationContainer>

@@ -25,7 +25,6 @@ export default class Home extends Component {
                         owner: owner 
                     })
                 })
-
                 this.setState({
                     posteos: arrayPosteos
                 })
@@ -55,16 +54,22 @@ export default class Home extends Component {
 
 const styles = StyleSheet.create({
     posteos: {
-        flex: 1,
-        marginVertical: 20,
-        marginBottom: 30,
-        backgroundColor: '#F08080',
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: 15,
-        borderRadius:10,
+      flex: 1,
+      marginVertical: 25,
+      marginBottom: 35,
+      backgroundColor: '#FA8072',
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: 20,
+      borderRadius: 15,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.3,
+      shadowRadius: 6,
+      elevation: 8,
+      borderWidth: 1,
+      borderColor: '#FF4500',
+      width:"100%"
     },
-    
-    
-})
-
+  });
+  
