@@ -15,18 +15,18 @@ export default class Home extends Component {
         db.collection('posteos')
             .orderBy('createdAt', 'desc')
             .onSnapshot(docs => {
-                let arrayPosteos = []
+                let postArray = []
                 docs.forEach(doc => {
-                    const dataDePosteos = doc.data();
-                    const owner = dataDePosteos.owner;
-                    arrayPosteos.push({
+                    const dataPosts = doc.data();
+                    const owner = dataPosts.owner;
+                    postArray.push({
                         id: doc.id,
-                        data: dataDePosteos,
+                        data: dataPosts,
                         owner: owner 
                     })
                 })
                 this.setState({
-                    posteos: arrayPosteos
+                    posteos: postArray
                 })
             })
     }

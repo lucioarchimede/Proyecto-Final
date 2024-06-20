@@ -9,7 +9,7 @@ export default class Comentarios extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            dataPosteo: null,
+            postData: null,
         };
     }
 
@@ -18,7 +18,7 @@ export default class Comentarios extends Component {
             .collection('posteos')
             .doc(this.props.route.params.id)
             .onSnapshot((doc) => {
-                this.setState({ dataPosteo: doc.data() });
+                this.setState({ postData: doc.data() });
             });
     }
 
@@ -30,10 +30,10 @@ export default class Comentarios extends Component {
         return (
             <View style={styles.container}>
                 <Text style={styles.title}>Comentarios</Text>
-                {this.state.dataPosteo !== null && this.state.dataPosteo.comentarios !== undefined ? (
+                {this.state.postData !== null && this.state.postData.comentarios !== undefined ? (
                     <View style={styles.commentsContainer}>
                         <FlatList
-                            data={this.state.dataPosteo.comentarios
+                            data={this.state.postData.comentarios
                                 .slice()
                                 .sort((a, b) => b.createdAt - a.createdAt)}
                             keyExtractor={(item) => item.createdAt.toString()}

@@ -3,7 +3,7 @@ import { Text, View, TouchableOpacity, StyleSheet, FlatList, Image, Modal, Press
 import { auth, db } from '../firebase/config';
 import Posteo from '../components/Posteo';
 
-export default class MiPerfil extends Component {
+export default class Profile extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -30,7 +30,7 @@ export default class MiPerfil extends Component {
             data: doc.data(),
           };
         });
-        console.log('Datos del usuario:', usuario);  // Depuración
+        console.log('Datos del usuario:', usuario); 
         this.setState({ usuario });
       });
   }
@@ -58,9 +58,9 @@ export default class MiPerfil extends Component {
     try {
       await db.collection('posteos').doc(posteoId).delete();
       console.log('Posteo eliminado');
-      const updatedPosteos = this.state.posteos.filter(post => post.id !== posteoId);
+      const posteosActualizados = this.state.posteos.filter(post => post.id !== posteoId);
       this.setState({
-        posteos: updatedPosteos,
+        posteos: posteosActualizados,
         modalVisible: false,
       });
     } catch (error) {

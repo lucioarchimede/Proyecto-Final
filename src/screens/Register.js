@@ -43,8 +43,8 @@ class Register extends Component {
                 owner: email,
                 createdAt: Date.now(),
                 name: name,
-                miniBio: miniBio,
-                fotoPerfil: fotoPerfil
+                miniBio: this.state.miniBio ,
+                fotoPerfil: this.state.fotoPerfil,
             })
             .then(() => {
                 console.log("Usuario añadido a Firestore");

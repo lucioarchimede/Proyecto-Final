@@ -91,19 +91,41 @@ class Login extends Component {
 
 const styles = StyleSheet.create({
   input: {
-    borderColor: "red",
-    borderWidth: 1,
-    borderRadius: 5,
-    marginBottom: 16,
+    borderColor: "#FF4500", // Cambia el color del borde a un tono más vibrante
+    borderWidth: 2, // Aumenta el ancho del borde
+    borderRadius: 8, // Aumenta el radio del borde para esquinas más redondeadas
+    marginBottom: 20, // Ajusta el margen inferior
+    padding: 10, // Añade relleno interno para mejor apariencia
+    backgroundColor: "#FFF8DC", // Fondo color crema claro
+    shadowColor: "#000", // Añade sombra
+    shadowOffset: { width: 0, height: 2 }, // Offset de la sombra
+    shadowOpacity: 0.25, // Opacidad de la sombra
+    shadowRadius: 3.84, // Radio de la sombra
+    elevation: 5, // Elevación para Android
   },
   btn: {
-    backgroundColor: "green",
+    backgroundColor: "#32CD32", // Un verde lima más llamativo
     textAlign: "center",
-    padding: 10,
+    paddingVertical: 12, // Padding vertical aumentado
+    paddingHorizontal: 20, // Padding horizontal
+    borderRadius: 25, // Bordes completamente redondeados
+    shadowColor: "#000", // Añade sombra
+    shadowOffset: { width: 0, height: 4 }, // Offset de la sombra
+    shadowOpacity: 0.3, // Opacidad de la sombra
+    shadowRadius: 4.65, // Radio de la sombra
+    elevation: 8, // Elevación para Android
+    marginVertical: 10, // Margen vertical para separar de otros elementos
   },
   textBtn: {
-    color: "white",
+    color: "#FFF", // Color de texto blanco
+    fontWeight: "bold", // Texto en negrita
+    fontSize: 18, // Tamaño de fuente aumentado
+    letterSpacing: 1, // Espaciado entre letras
+    textShadowColor: "#000", // Sombra de texto
+    textShadowOffset: { width: 1, height: 1 }, // Offset de la sombra del texto
+    textShadowRadius: 2, // Radio de la sombra del texto
   },
 });
+
 
 export default Login;
