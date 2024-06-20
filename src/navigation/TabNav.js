@@ -21,9 +21,7 @@ class TabNav extends Component {
                 <Tab.Screen
                     options={{ headerShown: false }}
                     name='profile' component={Profile} />
-                <Tab.Screen
-                    options={{ headerShown: false }}
-                    name='usersProfile' component={UsersProfile} />
+                
             </Tab.Navigator>
         );
     }

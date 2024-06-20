@@ -87,13 +87,7 @@ export default class MiPerfil extends Component {
     this.props.navigation.navigate('Login');
   }
 
-  handleChangePassword = () => {
-    this.props.navigation.navigate('CambioClave');
-  };
 
-  handleEditProfile = () => {
-    this.props.navigation.navigate('EditarPerfil');
-  };
 
   render() {
     const { usuario, posteos } = this.state;
@@ -108,9 +102,6 @@ export default class MiPerfil extends Component {
             )}
             <Text style={styles.mail}>{usuario.data.owner}</Text>
             <Text style={styles.minibio}>{usuario.data.miniBio}</Text>
-            <TouchableOpacity onPress={this.handleEditProfile}>
-              <Text style={styles.editProfileButton}>Editar Perfil</Text>
-            </TouchableOpacity>
           </View>
         ) : (
           <Text>Cargando...</Text>
@@ -134,13 +125,6 @@ export default class MiPerfil extends Component {
             />
           </View>
         </View>
-
-        <View style={styles.changePasswordButton}>
-          <TouchableOpacity onPress={this.handleChangePassword}>
-            <Text>Cambiar Contraseña</Text>
-          </TouchableOpacity>
-        </View>
-
         <View style={styles.logout}>
           <TouchableOpacity onPress={this.logout}>
             <Text>Cerrar sesión</Text>
