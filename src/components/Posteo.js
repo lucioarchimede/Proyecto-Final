@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
+import Like from "../components/Like"
 import { db, auth } from "../firebase/config";
 import firebase from "firebase";
 
@@ -20,38 +21,14 @@ export default class Posteo extends Component {
     });
   }
 
-  like() {
-    db.collection("posteos")
-      .doc(this.props.data.id)
-      .update({
-        likes: firebase.firestore.FieldValue.arrayUnion(auth.currentUser.email),
-      })
-      .then(() => this.setState({ estaMiLike: true }))
-      .catch((err) => console.log(err));
-  }
-
-  unlike() {
-    db.collection("posteos")
-      .doc(this.props.data.id)
-      .update({
-        likes: firebase.firestore.FieldValue.arrayRemove(
-          auth.currentUser.email
-        ),
-      })
-      .then(() => this.setState({ estaMiLike: false }))
-      .catch((err) => console.log(err));
-  }
-
   irComentarios() {
     this.props.navigation.navigate("Comentarios", { id: this.props.id });
   }
 
   irAlPerfil() {
-    this.props.data.owner == auth.currentUser.correo
-      ? this.props.navigation.navigate("usersProfile")
-      : this.props.navigation.navigate("profile", {
-          user: this.props.data.owner,
-        });
+    this.props.data.owner === auth.currentUser.correo
+      ? this.props.navigation.navigate('Perfil')
+      : this.props.navigation.navigate('UsersProfile', { user: this.props.data.owner });
   }
 
   render() {
@@ -70,16 +47,7 @@ export default class Posteo extends Component {
           />
           <Text style={styles.description}>{data.descripcion}</Text>
           <View>
-            <Text>{this.props.data.likes.length}</Text>
-            {this.state.estaMiLike ? (
-              <TouchableOpacity onPress={() => this.unlike()}>
-                <FontAwesome name="heart" color="red" size={24} />
-              </TouchableOpacity>
-            ) : (
-              <TouchableOpacity onPress={() => this.like()}>
-                <FontAwesome name="heart-o" color="red" size={24} />
-              </TouchableOpacity>
-            )}
+          <Like postId={this.props.id} likes={this.props.data.likes} />
           </View>
         </View>
         <View>

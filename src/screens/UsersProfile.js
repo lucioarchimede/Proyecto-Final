@@ -1,166 +1,175 @@
+import { Text, View, StyleSheet, FlatList, Image } from "react-native";
 import React, { Component } from "react";
-import {TouchableOpacity,View,Text,StyleSheet,FlatList,Image,ActivityIndicator} from "react-native";
-import { FontAwesome } from '@expo/vector-icons';
-import { auth, db } from "../firebase/config";
+import { db } from "../firebase/config";
+import Posteo from "../components/Posteo";
 
-class UsersProfile extends Component {
+export default class UsersProfile extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      userInfo: [],
-      userPosts: []
+      users: [],
+      posteos: [],
     };
   }
+
   componentDidMount() {
-    if (this.props.route.params === auth.currentUser) {
-      this.props.navigation.navigate("perfil");
-    }
+    db.collection("users")
+      .where("owner", "==", this.props.route.params.user)
+      .onSnapshot((docs) => {
+        let arrDocs = [];
+        docs.forEach((doc) => {
+          arrDocs.push({
+            id: doc.id,
+            data: doc.data(),
+          });
+        });
+        this.setState(
+          {
+            users: arrDocs,
+          },
+          () => console.log(this.state.users)
+        );
+      });
 
-
-
-    db.collection('user').where('owner', '==', this.props.route.params).onSnapshot(
-      data => {
-        let info = []
-        data.forEach(i => {
-          info.push(
-            {
-              id: i.id,
-              datos: i.data()
-            })
-        })
-        this.setState({
-          userInfo: info
-        })
-      }
-    )
-
-    db.collection('posts').where('owner', '==', this.props.route.params).onSnapshot(
-      data => {
-        let info = []
-        data.forEach(i => {
-          info.push(
-            {
-              id: i.id,
-              datos: i.data()
-            })
-        })
-
-        this.setState({
-          userPosts: info
-        })
-          ;
-      }
-    )
+    db.collection("posteos")
+      .where("owner", "==", this.props.route.params.user)
+      .onSnapshot((docs) => {
+        let arrDocs = [];
+        docs.forEach((doc) => {
+          arrDocs.push({
+            id: doc.id,
+            data: doc.data(),
+          });
+        });
+        arrDocs.sort((a, b) => b.data.createdAt - a.data.createdAt);
+        this.setState(
+          {
+            posteos: arrDocs,
+          },
+          () => console.log(this.state.posteos)
+        );
+      });
   }
 
   render() {
-
     return (
-      <View style={styles.formContainer}>
-        <TouchableOpacity
-          onPress={() => this.props.navigation.navigate("tabnav")}
-          style={styles.coontainerFlecha}>
-          <FontAwesome style={styles.flecha} name="arrow-left" size='large' />
-        </TouchableOpacity>
-
-        {this.state.userInfo.length > 0 ?
-          <>
-
-            <View style={styles.conteinerProfile}>
-              {this.state.userInfo[0].datos.profilePic != '' ?
-                <Image
-                  style={styles.profilePic}
-                  source={{ uri: this.state.userInfo[0].datos.profilePic }}
-                  resizeMode='contain'
-                />
-                :
-                <Image
-                  style={styles.profilePic}
-                  source={{ uri: 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png' }}
-                  resizeMode='contain' />}
-              <View style={styles.containerDatos}>
-                <Text style={styles.userName}> {this.state.userInfo[0].datos.userName} </Text>
-                <Text> {this.state.userInfo[0].datos.owner} </Text>
-                {this.state.userInfo[0].datos.miniBio.length > 0 ? <Text> {this.state.userInfo[0].datos.miniBio} </Text> : false}
-                <Text> {this.state.userPosts.length} posts</Text>
+      <View style={styles.container}>
+        <View style={styles.profileInfo}>
+          <FlatList
+            data={this.state.users}
+            keyExtractor={(item) => item.id.toString()}
+            renderItem={({ item }) => (
+              <View>
+                <Text style={styles.username}>{item.data.name}</Text>
+                {item.data.fotoPerfil != "" ? (
+                  <Image
+                    source={item.data.profileImage}
+                    style={styles.img}
+                    resizeMode="contain"
+                  />
+                ) : (
+                  ""
+                )}
+                <Text style={styles.owner}>{item.data.owner}</Text>
+                {item.data.miniBio ? (
+                  <Text style={styles.miniBio}>{item.data.miniBio}</Text>
+                ) : (
+                  ""
+                )}
               </View>
-            </View>
-            <View style={styles.containerPost}>
-              {<FlatList
-                data={this.state.userPosts}
-                keyExtractor={i => i.id}
-                numColumns={3}
-                renderItem={({ item }) => {
-                  return (
-
-                    <Image style={styles.camera} source={{ uri: item.datos.photo }} />
-
-                  )
-                }
-                }
-              />}
-            </View>
-
-          </>
-          :
-          <View style={styles.activityIndicatorContainer}>
-            <ActivityIndicator size='small' color='purple' />
-          </View>
-        }
-
+            )}
+          />
+        </View>
+        <View style={styles.posts}>
+          <Text style={styles.postsTitle}>
+            Posteos de {this.props.route.params.user}{" "}
+          </Text>
+          <Text style={styles.cantidadPosteos}>
+            Cantidad: {this.state.posteos.length}{" "}
+          </Text>
+          <FlatList
+            data={this.state.posteos}
+            keyExtractor={(item) => item.id.toString()}
+            renderItem={({ item }) => (
+              <View style={styles.posteos}>
+                <Posteo
+                  navigation={this.props.navigation}
+                  data={item.data}
+                  id={item.id}
+                />
+              </View>
+            )}
+          />
+        </View>
       </View>
     );
   }
 }
-
 const styles = StyleSheet.create({
-  coontainerFlecha: {
-    marginTop: 20,
-    marginLeft: 20,
-  },
-  activityIndicatorContainer: {
+  container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "#f5f5f5",
+    padding: 20,
   },
-  profilePic: {
-    height: 50,
-    width: 50,
-    borderRadius: 25,
-    borderColor: 'white',
-    marginRight: 10
+  profileInfo: {
+    alignItems: "center",
+    marginBottom: 20,
+    backgroundColor: "#fff",
+    padding: 20,
+    borderRadius: 15,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 3,
   },
-  formContainer: {
-    height: 90,
+  username: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#333",
+    marginBottom: 10,
+    textAlign: "center",
+  },
+  profileImage: {
+    width: 200,
+    height: 200,
+    borderRadius: 100,
     marginBottom: 10,
   },
-  containerDatos: {
-    height: '100%',
-    marginBottom: 5,
+  email: {
+    fontSize: 16,
+    color: "gray",
+    marginBottom: 10,
+    textAlign: "center",
   },
-  conteinerProfile: {
-    flexDirection: 'row',
-    height: '100%',
-    justifyContent: 'center',
-    marginBottom: 5,
-    marginTop: 15,
+  biografia: {
+    fontSize: 16,
+    color: "#777",
+    textAlign: "center",
   },
-  containerPost: {
+  postsContainer: {
     flex: 1,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    marginTop: 5,
-    marginBottom: 5,
-    height: '100%',
-
   },
-  textoPost: {
-    marginLeft: 5,
+  postsTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#333",
+    marginBottom: 15,
   },
-  userName: {
-    fontWeight: 'bold',
+  postCount: {
+    fontSize: 16,
+    color: "#333",
+    marginBottom: 15,
   },
-
+  post: {
+    backgroundColor: "#fff",
+    padding: 20,
+    borderRadius: 15,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 3,
+    marginBottom: 20,
+  },
 });
-
-export default UsersProfile;

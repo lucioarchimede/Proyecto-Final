@@ -6,6 +6,7 @@ import Register from "../screens/Register"
 import Login from "../screens/Login"
 import Comentarios from "../screens/Comentarios"
 import TabNav from './TabNav'
+import UsersProfile from '../screens/UsersProfile'
 
 
 const Stack = createNativeStackNavigator();
@@ -28,6 +29,10 @@ const Stack = createNativeStackNavigator();
           name='Comentarios'
           component={Comentarios}
         /> 
+        <Stack.Screen
+          name='UsersProfile'
+          component={UsersProfile}
+        />
 
         </Stack.Navigator>
     </NavigationContainer>
