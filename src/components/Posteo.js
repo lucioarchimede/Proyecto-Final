@@ -10,7 +10,7 @@ export default class Posteo extends Component {
     super(props);
     this.state = {
       likes: 0,
-      controlLike: false,
+      controlLike: false, //pribando que todo ande bien
     };
   }
 
