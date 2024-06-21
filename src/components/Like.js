@@ -25,7 +25,7 @@ export default class Like extends Component {
   like() {
     const owner = auth.currentUser.owner;
     if (!owner) {
-      console.log('No owner defined.'); // Manejar caso de usuario no definido
+      console.log('No owner defined.'); 
       return;
     }
   
