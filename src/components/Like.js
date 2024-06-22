@@ -9,7 +9,7 @@ export default class Like extends Component {
     super(props);
     this.state = {
       likes: props.likes.length,
-      controlarLike: props.likes.includes(auth.currentUser.owner),
+      controlarLike: props.likes.includes(auth.currentUser.email),
     };
   }
 
@@ -17,22 +17,25 @@ export default class Like extends Component {
     if (prevProps.likes !== this.props.likes) {
       this.setState({
         likes: this.props.likes.length,
-        controlarLike: this.props.likes.includes(auth.currentUser.owner),
+        controlarLike: this.props.likes.includes(auth.currentUser.email),
       });
     }
   }
 
   like() {
-    const owner = auth.currentUser.owner;
-    if (!owner) {
-      console.log('No owner defined.'); 
+    const currentUser = auth.currentUser;
+    if (!currentUser || !currentUser.email) {
+      console.error("User is not authenticated or email is missing.");
       return;
     }
-  
+
+    // Deshabilitar el botón temporalmente
+    this.setState({ disabled: true });
+
     db.collection("posteos")
       .doc(this.props.postId)
       .update({
-        likes: firebase.firestore.FieldValue.arrayUnion(owner),
+        likes: firebase.firestore.FieldValue.arrayUnion(currentUser.email),
       })
       .then(() => {
         this.setState((prevState) => ({
@@ -40,16 +43,27 @@ export default class Like extends Component {
           controlarLike: true,
         }));
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.log(err))
+      .finally(() => {
+        // Habilitar el botón de nuevo después de la operación
+        this.setState({ disabled: false });
+      });
   }
 
   unlike() {
+    const currentUser = auth.currentUser;
+    if (!currentUser || !currentUser.email) {
+      console.error("User is not authenticated or email is missing.");
+      return;
+    }
+
+    // Deshabilitar el botón temporalmente
+    this.setState({ disabled: true });
+
     db.collection("posteos")
       .doc(this.props.postId)
       .update({
-        likes: firebase.firestore.FieldValue.arrayRemove(
-          auth.currentUser.owner
-        ),
+        likes: firebase.firestore.FieldValue.arrayRemove(currentUser.email),
       })
       .then(() => {
         this.setState((prevState) => ({
@@ -57,15 +71,17 @@ export default class Like extends Component {
           controlarLike: false,
         }));
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.log(err))
+      .finally(() => {
+        // Habilitar el botón de nuevo después de la operación
+        this.setState({ disabled: false });
+      });
   }
 
   render() {
     return (
-      <View style={styles.container}>
-        <Text>
-          {this.state.likes} {this.state.likes === 1 ? "Like" : "Likes"}
-        </Text>
+      <View>
+        <Text>{this.props.likes.length}</Text>
         {this.state.controlarLike ? (
           <TouchableOpacity onPress={() => this.unlike()}>
             <FontAwesome name="heart" color="red" size={24} />

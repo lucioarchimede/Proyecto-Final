@@ -66,6 +66,7 @@ class Login extends Component {
           value={this.state.password}
           placeholder="Indica tu contraseña"
           keyboardType="default"
+          secureTextEntry
           style={styles.input}
         />
         <TouchableOpacity
