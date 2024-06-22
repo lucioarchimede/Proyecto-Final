@@ -8,20 +8,6 @@ import firebase from "firebase";
 export default class Posteo extends Component {
   constructor(props) {
     super(props);
-<<<<<<< HEAD
-=======
-    this.state = {
-      likes: 0,
-      controlLike: false, //pribando que todo ande bien
-    };
-  }
-
-  componentDidMount() {
-    const validarLike = this.props.data.likes.includes(auth.currentUser.correo);
-    this.setState({
-      controlLike: validarLike,
-    });
->>>>>>> 64b7a953fc19179f650e0959f216813b94d56f6d
   }
 
   irComentarios() {
