@@ -1,5 +1,12 @@
-import { Text, View, StyleSheet, FlatList, Image } from "react-native";
 import React, { Component } from "react";
+import {
+  Text,
+  View,
+  StyleSheet,
+  FlatList,
+  Image,
+  ScrollView,
+} from "react-native";
 import { db } from "../firebase/config";
 import Posteo from "../components/Posteo";
 
@@ -23,12 +30,9 @@ export default class UsersProfile extends Component {
             data: doc.data(),
           });
         });
-        this.setState(
-          {
-            users: arrDocs,
-          },
-          () => console.log(this.state.users)
-        );
+        this.setState({
+          users: arrDocs,
+        });
       });
 
     db.collection("posteos")
@@ -42,18 +46,15 @@ export default class UsersProfile extends Component {
           });
         });
         arrDocs.sort((a, b) => b.data.createdAt - a.data.createdAt);
-        this.setState(
-          {
-            posteos: arrDocs,
-          },
-          () => console.log(this.state.posteos)
-        );
+        this.setState({
+          posteos: arrDocs,
+        });
       });
   }
 
   render() {
     return (
-      <View style={styles.container}>
+      <ScrollView style={styles.container}>
         <View style={styles.profileInfo}>
           <FlatList
             data={this.state.users}
@@ -61,20 +62,16 @@ export default class UsersProfile extends Component {
             renderItem={({ item }) => (
               <View>
                 <Text style={styles.username}>{item.data.name}</Text>
-                {item.data.fotoPerfil != "" ? (
+                {item.data.fotoPerfil !== "" && (
                   <Image
-                    source={item.data.profileImage}
-                    style={styles.img}
+                    source={{ uri: item.data.fotoPerfil }}
+                    style={styles.profileImage}
                     resizeMode="contain"
                   />
-                ) : (
-                  ""
                 )}
-                <Text style={styles.owner}>{item.data.owner}</Text>
-                {item.data.miniBio ? (
-                  <Text style={styles.miniBio}>{item.data.miniBio}</Text>
-                ) : (
-                  ""
+                <Text style={styles.email}>{item.data.owner}</Text>
+                {item.data.miniBio && (
+                  <Text style={styles.biografia}>{item.data.miniBio}</Text>
                 )}
               </View>
             )}
@@ -82,16 +79,16 @@ export default class UsersProfile extends Component {
         </View>
         <View style={styles.posts}>
           <Text style={styles.postsTitle}>
-            Posteos de {this.props.route.params.user}{" "}
+            Posteos de {this.props.route.params.user}
           </Text>
-          <Text style={styles.cantidadPosteos}>
-            Cantidad: {this.state.posteos.length}{" "}
+          <Text style={styles.postCount}>
+            Cantidad: {this.state.posteos.length}
           </Text>
           <FlatList
             data={this.state.posteos}
             keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => (
-              <View style={styles.posteos}>
+              <View style={styles.post}>
                 <Posteo
                   navigation={this.props.navigation}
                   data={item.data}
@@ -101,19 +98,19 @@ export default class UsersProfile extends Component {
             )}
           />
         </View>
-      </View>
+      </ScrollView>
     );
   }
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#f5f5f5",
-    padding: 20,
   },
   profileInfo: {
     alignItems: "center",
-    marginBottom: 20,
+    marginVertical: 20,
     backgroundColor: "#fff",
     padding: 20,
     borderRadius: 15,
@@ -147,21 +144,7 @@ const styles = StyleSheet.create({
     color: "#777",
     textAlign: "center",
   },
-  postsContainer: {
-    flex: 1,
-  },
-  postsTitle: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "#333",
-    marginBottom: 15,
-  },
-  postCount: {
-    fontSize: 16,
-    color: "#333",
-    marginBottom: 15,
-  },
-  post: {
+  posts: {
     backgroundColor: "#fff",
     padding: 20,
     borderRadius: 15,
@@ -171,5 +154,21 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 3,
     marginBottom: 20,
+  },
+  postsTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#333",
+    marginBottom: 15,
+    textAlign: "center",
+  },
+  postCount: {
+    fontSize: 16,
+    color: "#333",
+    marginBottom: 15,
+    textAlign: "center",
+  },
+  post: {
+    marginBottom: 10,
   },
 });

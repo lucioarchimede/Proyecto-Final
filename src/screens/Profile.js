@@ -1,13 +1,13 @@
-import React, { Component } from 'react';
-import { Text, View, TouchableOpacity, StyleSheet, FlatList, Image, Modal, Pressable } from 'react-native';
-import { auth, db } from '../firebase/config';
-import Posteo from '../components/Posteo';
+import React, { Component } from "react";
+import {Text,View,TouchableOpacity,StyleSheet,FlatList,Image,Modal,Pressable,} from "react-native";
+import { auth, db } from "../firebase/config";
+import Posteo from "../components/Posteo";
 
 export default class Profile extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      usuario: null, //Esto hay que cambiarlo esta en Null pq no me anda 
+      usuario: [],
       posteos: [],
       seleccionPosteoId: null,
       modalVisible: false,
@@ -15,29 +15,24 @@ export default class Profile extends Component {
   }
 
   componentDidMount() {
-    this.obtenerDatosUsuario();
-    this.obtenerPosteosUsuario();
-  }
-
-  obtenerDatosUsuario() {
-    db.collection('usuarios')
-      .where('owner', '==', auth.currentUser.email)
+    db.collection("users")
+      .where("owner", "==", auth.currentUser.email)
       .onSnapshot((docs) => {
-        let usuario = null;
+        let datos = [];
         docs.forEach((doc) => {
-          usuario = {
+          datos.push({
             id: doc.id,
             data: doc.data(),
-          };
+          });
         });
-        console.log('Datos del usuario:', usuario); 
-        this.setState({ usuario });
-      });
-  }
 
-  obtenerPosteosUsuario() {
-    db.collection('posteos')
-      .where('owner', '==', auth.currentUser.email)
+        this.setState({
+          usuarios: datos,
+        });
+      });
+
+    db.collection("posteos")
+      .where("owner", "==", auth.currentUser.email)
       .onSnapshot((docs) => {
         let data = [];
         docs.forEach((doc) => {
@@ -47,65 +42,64 @@ export default class Profile extends Component {
           });
         });
         data.sort((a, b) => b.data.createdAt - a.data.createdAt);
-        console.log('Posteos del usuario:', data);  // Depuración
+        console.log("Posteos del usuario:", data); // Depuración
         this.setState({
           posteos: data,
         });
       });
   }
-
   confirmarEliminacion = async (posteoId) => {
     try {
-      await db.collection('posteos').doc(posteoId).delete();
-      console.log('Posteo eliminado');
-      const posteosActualizados = this.state.posteos.filter(post => post.id !== posteoId);
+      await db.collection("posteos").doc(posteoId).delete();
+      console.log("Posteo eliminado");
+      const posteosActualizados = this.state.posteos.filter(
+        (post) => post.id !== posteoId
+      );
       this.setState({
         posteos: posteosActualizados,
         modalVisible: false,
       });
     } catch (error) {
-      console.error('Error al eliminar posteo:', error);
+      console.error("Error al eliminar posteo:", error);
     }
-  }
+  };
 
   borrarPosteo = (posteoId) => {
     this.setState({
       seleccionPosteoId: posteoId,
       modalVisible: true,
     });
-  }
+  };
 
   cerrarModal = () => {
     this.setState({
       seleccionPosteoId: null,
       modalVisible: false,
     });
-  }
+  };
 
   logout = () => {
     auth.signOut();
-    this.props.navigation.navigate('Login');
-  }
-
-
+    this.props.navigation.navigate("Login");
+  };
 
   render() {
     const { usuario, posteos } = this.state;
     return (
       <View style={styles.container}>
-        <Text style={styles.postsTitle}>Tu perfil</Text>
-        {usuario ? (
-          <View style={styles.profileInfo}>
-            <Text style={styles.username}>{usuario.data.name}</Text>
-            {usuario.data.fotoPerfil && (
-              <Image source={{ uri: usuario.data.fotoPerfil }} style={styles.profileImage} />
-            )}
-            <Text style={styles.mail}>{usuario.data.owner}</Text>
-            <Text style={styles.minibio}>{usuario.data.miniBio}</Text>
-          </View>
-        ) : (
-          <Text>Cargando...</Text>
-        )}
+        <Text style={styles.title}>Tu perfil</Text>
+        <FlatList
+          data={this.state.usuarios}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => (
+            <View style={styles.profileInfo}>
+              <Image source={{ uri: item.data.fotoPerfil }} style={styles.profileImage} />
+              <Text style={styles.username}>{item.data.name}</Text>
+              <Text style={styles.mail}>{item.data.owner}</Text>
+              <Text style={styles.minibio}>{item.data.miniBio}</Text>
+            </View>
+          )}
+        />
 
         <View style={styles.posts}>
           <Text style={styles.postsTitle}>Tus posteos</Text>
@@ -119,7 +113,11 @@ export default class Profile extends Component {
                   <TouchableOpacity onPress={() => this.borrarPosteo(item.id)}>
                     <Text>Borrar</Text>
                   </TouchableOpacity>
-                  <Posteo navigation={this.props.navigation} data={item.data} id={item.id} />
+                  <Posteo
+                    navigation={this.props.navigation}
+                    data={item.data}
+                    id={item.id}
+                  />
                 </View>
               )}
             />
@@ -141,7 +139,9 @@ export default class Profile extends Component {
         >
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
-              <Text style={styles.modalText}>¿Estás seguro de que quieres borrar este posteo?</Text>
+              <Text style={styles.modalText}>
+                ¿Estás seguro de que quieres borrar este posteo?
+              </Text>
               <View style={styles.modalButtons}>
                 <Pressable
                   style={[styles.button, styles.buttonClose]}
@@ -151,7 +151,9 @@ export default class Profile extends Component {
                 </Pressable>
                 <Pressable
                   style={[styles.button, styles.buttonConfirm]}
-                  onPress={() => this.confirmarEliminacion(this.state.seleccionPosteoId)}
+                  onPress={() =>
+                    this.confirmarEliminacion(this.state.seleccionPosteoId)
+                  }
                 >
                   <Text style={styles.textStyle}>Borrar</Text>
                 </Pressable>
@@ -167,18 +169,18 @@ export default class Profile extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'flex-start',
+    alignItems: "center",
+    justifyContent: "flex-start",
     backgroundColor: "lightblue",
     padding: 10,
   },
   profileInfo: {
-    alignItems: 'center',
+    alignItems: "center",
     padding: 10,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: "#FFFFFF",
     borderRadius: 10,
     marginBottom: 20,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2,
@@ -189,8 +191,8 @@ const styles = StyleSheet.create({
   },
   mail: {
     fontSize: 14,
-    color: 'gray',
-    textAlign: 'center',
+    color: "gray",
+    textAlign: "center",
   },
   profileImage: {
     width: 200,
@@ -199,39 +201,39 @@ const styles = StyleSheet.create({
   },
   username: {
     fontSize: 25,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginVertical: 10,
-    textAlign: 'center',
+    textAlign: "center",
   },
   minibio: {
     fontSize: 14,
-    color: 'gray',
-    textAlign: 'center',
+    color: "gray",
+    textAlign: "center",
   },
   posts: {
     flex: 1,
-    width: '100%',
+    width: "100%",
     marginTop: 20,
   },
   postsList: {
     flex: 1,
-    width: '100%',
+    width: "100%",
   },
   postsTitle: {
     fontSize: 35,
-    fontWeight: 'bold',
-    fontFamily: 'calibri',
+    fontWeight: "bold",
+    fontFamily: "calibri",
     marginBottom: 15,
-    textAlign: 'center',
+    textAlign: "center",
   },
   post: {
-    width: '90%',
-    alignSelf: 'center',
+    width: "90%",
+    alignSelf: "center",
     marginBottom: 15,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: "#FFFFFF",
     borderRadius: 10,
     padding: 15,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2,
@@ -247,10 +249,10 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   editProfileButton: {
-    color: 'black',
+    color: "black",
     fontSize: 16,
-    fontWeight: 'bold',
-    textDecorationLine: 'none',
+    fontWeight: "bold",
+    textDecorationLine: "none",
     marginTop: 10,
   },
   changePasswordButton: {
@@ -258,17 +260,17 @@ const styles = StyleSheet.create({
   },
   centeredView: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     marginTop: 22,
   },
   modalView: {
     margin: 20,
-    backgroundColor: 'white',
+    backgroundColor: "white",
     borderRadius: 20,
     padding: 35,
-    alignItems: 'center',
-    shadowColor: '#000',
+    alignItems: "center",
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2,
@@ -279,12 +281,12 @@ const styles = StyleSheet.create({
   },
   modalText: {
     marginBottom: 15,
-    textAlign: 'center',
+    textAlign: "center",
   },
   modalButtons: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    width: '100%',
+    flexDirection: "row",
+    justifyContent: "space-around",
+    width: "100%",
   },
   button: {
     borderRadius: 5,
@@ -292,14 +294,14 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   buttonClose: {
-    backgroundColor: '#2196F3',
+    backgroundColor: "#2196F3",
   },
   buttonConfirm: {
-    backgroundColor: '#FF6347',
+    backgroundColor: "#FF6347",
   },
   textStyle: {
-    color: 'white',
-    fontWeight: 'bold',
-    textAlign: 'center',
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center",
   },
 });
