@@ -4,8 +4,7 @@ import { FontAwesome } from '@expo/vector-icons';
 import Home from '../screens/Home';
 import NewPost from '../screens/NewPost';
 import Profile from '../screens/Profile';
-import UsersProfile from '../screens/UsersProfile';
-
+import Search from "../screens/Search"
 const Tab = createBottomTabNavigator();
 
 class TabNav extends Component {
@@ -21,6 +20,10 @@ class TabNav extends Component {
                 <Tab.Screen
                     options={{ headerShown: false }}
                     name='profile' component={Profile} />
+
+                <Tab.Screen
+                    options={{ headerShown: false }}
+                    name='search' component={Search} />
                 
             </Tab.Navigator>
         );

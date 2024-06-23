@@ -84,7 +84,7 @@ export default class Profile extends Component {
   };
 
   render() {
-    const { usuario, posteos } = this.state;
+    const { posteos } = this.state;
     return (
       <View style={styles.container}>
         <Text style={styles.title}>Tu perfil</Text>
@@ -171,49 +171,58 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "flex-start",
-    backgroundColor: "lightblue",
-    padding: 10,
+    backgroundColor: "#E6F7FF", 
+    padding: 20,
   },
   profileInfo: {
     alignItems: "center",
-    padding: 10,
+    padding: 20,
     backgroundColor: "#FFFFFF",
-    borderRadius: 10,
+    borderRadius: 20,
     marginBottom: 20,
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
-      height: 2,
+      height: 4,
     },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 10,
   },
   mail: {
-    fontSize: 14,
-    color: "gray",
+    fontSize: 16, 
+    color: "#888888",
     textAlign: "center",
+    marginVertical: 5, 
   },
   profileImage: {
-    width: 200,
-    height: 200,
-    borderRadius: 100,
+    width: 150, 
+    height: 150,
+    borderRadius: 75, 
+    borderWidth: 2,
+    borderColor: "#32CD32", 
+    marginBottom: 10,
   },
   username: {
-    fontSize: 25,
+    fontSize: 28, 
     fontWeight: "bold",
     marginVertical: 10,
     textAlign: "center",
+    color: "#333333", 
   },
   minibio: {
-    fontSize: 14,
-    color: "gray",
+    fontSize: 16,
+    color: "#888888", 
     textAlign: "center",
+    marginVertical: 5,
   },
   posts: {
     flex: 1,
     width: "100%",
     marginTop: 20,
+    padding:20,
+    elevation:10
+    
   },
   postsList: {
     flex: 1,
@@ -225,39 +234,33 @@ const styles = StyleSheet.create({
     fontFamily: "calibri",
     marginBottom: 15,
     textAlign: "center",
+    color: "#FF4500", 
   },
   post: {
-    width: "90%",
+    width: "95%", 
     alignSelf: "center",
-    marginBottom: 15,
+    marginBottom: 20, 
     backgroundColor: "#FFFFFF",
-    borderRadius: 10,
-    padding: 15,
+    borderRadius: 15, 
+    padding: 25, 
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
-      height: 2,
+      height: 4, 
     },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
+    shadowOpacity: 0.3,
+    shadowRadius: 5, 
+    elevation: 10, 
   },
   logout: {
     marginVertical: 20,
   },
   cantidadPosteos: {
     marginBottom: 15,
+    fontSize: 16, 
+    color: "#555555", 
   },
-  editProfileButton: {
-    color: "black",
-    fontSize: 16,
-    fontWeight: "bold",
-    textDecorationLine: "none",
-    marginTop: 10,
-  },
-  changePasswordButton: {
-    marginTop: 10,
-  },
+
   centeredView: {
     flex: 1,
     justifyContent: "center",
@@ -267,21 +270,23 @@ const styles = StyleSheet.create({
   modalView: {
     margin: 20,
     backgroundColor: "white",
-    borderRadius: 20,
+    borderRadius: 20, 
     padding: 35,
     alignItems: "center",
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
-      height: 2,
+      height: 4, 
     },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
+    shadowOpacity: 0.3,
+    shadowRadius: 5, 
+    elevation: 10, 
   },
   modalText: {
     marginBottom: 15,
     textAlign: "center",
+    fontSize: 18, 
+    color: "#333333", 
   },
   modalButtons: {
     flexDirection: "row",
@@ -289,15 +294,16 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   button: {
-    borderRadius: 5,
+    borderRadius: 10, 
     padding: 10,
     elevation: 2,
+    marginHorizontal: 10, 
   },
   buttonClose: {
     backgroundColor: "#2196F3",
   },
   buttonConfirm: {
-    backgroundColor: "#FF6347",
+    backgroundColor: "#FF6347", 
   },
   textStyle: {
     color: "white",
@@ -305,3 +311,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
 });
+
+
+
+
