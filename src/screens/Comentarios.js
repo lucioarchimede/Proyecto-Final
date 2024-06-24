@@ -43,7 +43,6 @@ export default class Comentarios extends Component {
                     <Text style={styles.commentText}>{item.coment}</Text>
                   </View>
                 )}
-                // Añadir esto para evitar el desplazamiento adicional del FlatList
                 scrollEnabled={false}
               />
             </View>

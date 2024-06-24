@@ -1,15 +1,5 @@
 import React, { Component } from "react";
-import {
-  Text,
-  View,
-  TouchableOpacity,
-  StyleSheet,
-  FlatList,
-  Image,
-  Modal,
-  Pressable,
-  ScrollView,
-} from "react-native";
+import {Text,View,TouchableOpacity,StyleSheet,FlatList,Image,Modal,Pressable,ScrollView,} from "react-native";
 import { auth, db } from "../firebase/config";
 import Posteo from "../components/Posteo";
 
@@ -52,7 +42,7 @@ export default class Profile extends Component {
           });
         });
         data.sort((a, b) => b.data.createdAt - a.data.createdAt);
-        console.log("Posteos del usuario:", data); // Depuración
+     
         this.setState({
           posteos: data,
         });
@@ -75,7 +65,7 @@ export default class Profile extends Component {
     }
   };
 
-  borrarPosteo = (posteoId) => {
+  borrarPost = (posteoId) => {
     this.setState({
       seleccionPosteoId: posteoId,
       modalVisible: true,
@@ -124,7 +114,7 @@ export default class Profile extends Component {
               keyExtractor={(item) => item.id.toString()}
               renderItem={({ item }) => (
                 <View style={styles.post}>
-                  <TouchableOpacity onPress={() => this.borrarPosteo(item.id)}>
+                  <TouchableOpacity onPress={() => this.borrarPost(item.id)}>
                     <Text>Borrar</Text>
                   </TouchableOpacity>
                   <Posteo

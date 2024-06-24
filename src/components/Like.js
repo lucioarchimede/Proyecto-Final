@@ -29,7 +29,7 @@ export default class Like extends Component {
       return;
     }
 
-    // Deshabilitar el botón temporalmente
+
     this.setState({ disabled: true });
 
     db.collection("posteos")
@@ -45,7 +45,7 @@ export default class Like extends Component {
       })
       .catch((err) => console.log(err))
       .finally(() => {
-        // Habilitar el botón de nuevo después de la operación
+
         this.setState({ disabled: false });
       });
   }
@@ -57,7 +57,7 @@ export default class Like extends Component {
       return;
     }
 
-    // Deshabilitar el botón temporalmente
+
     this.setState({ disabled: true });
 
     db.collection("posteos")
@@ -73,7 +73,7 @@ export default class Like extends Component {
       })
       .catch((err) => console.log(err))
       .finally(() => {
-        // Habilitar el botón de nuevo después de la operación
+
         this.setState({ disabled: false });
       });
   }
