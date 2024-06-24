@@ -1,5 +1,15 @@
 import React, { Component } from "react";
-import {Text,View,TouchableOpacity,StyleSheet,FlatList,Image,Modal,Pressable,} from "react-native";
+import {
+  Text,
+  View,
+  TouchableOpacity,
+  StyleSheet,
+  FlatList,
+  Image,
+  Modal,
+  Pressable,
+  ScrollView,
+} from "react-native";
 import { auth, db } from "../firebase/config";
 import Posteo from "../components/Posteo";
 
@@ -48,6 +58,7 @@ export default class Profile extends Component {
         });
       });
   }
+
   confirmarEliminacion = async (posteoId) => {
     try {
       await db.collection("posteos").doc(posteoId).delete();
@@ -86,14 +97,17 @@ export default class Profile extends Component {
   render() {
     const { posteos } = this.state;
     return (
-      <View style={styles.container}>
+      <ScrollView contentContainerStyle={styles.container}>
         <Text style={styles.title}>Tu perfil</Text>
         <FlatList
           data={this.state.usuarios}
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => (
             <View style={styles.profileInfo}>
-              <Image source={{ uri: item.data.fotoPerfil }} style={styles.profileImage} />
+              <Image
+                source={{ uri: item.data.fotoPerfil }}
+                style={styles.profileImage}
+              />
               <Text style={styles.username}>{item.data.name}</Text>
               <Text style={styles.mail}>{item.data.owner}</Text>
               <Text style={styles.minibio}>{item.data.miniBio}</Text>
@@ -161,17 +175,17 @@ export default class Profile extends Component {
             </View>
           </View>
         </Modal>
-      </View>
+      </ScrollView>
     );
   }
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     alignItems: "center",
     justifyContent: "flex-start",
-    backgroundColor: "#E6F7FF", 
+    backgroundColor: "#E6F7FF",
     padding: 20,
   },
   profileInfo: {
@@ -190,77 +204,72 @@ const styles = StyleSheet.create({
     elevation: 10,
   },
   mail: {
-    fontSize: 16, 
+    fontSize: 16,
     color: "#888888",
     textAlign: "center",
-    marginVertical: 5, 
+    marginVertical: 5,
   },
   profileImage: {
-    width: 150, 
+    width: 150,
     height: 150,
-    borderRadius: 75, 
+    borderRadius: 75,
     borderWidth: 2,
-    borderColor: "#32CD32", 
+    borderColor: "#32CD32",
     marginBottom: 10,
   },
   username: {
-    fontSize: 28, 
+    fontSize: 28,
     fontWeight: "bold",
     marginVertical: 10,
     textAlign: "center",
-    color: "#333333", 
+    color: "#333333",
   },
   minibio: {
     fontSize: 16,
-    color: "#888888", 
+    color: "#888888",
     textAlign: "center",
     marginVertical: 5,
   },
   posts: {
-    flex: 1,
     width: "100%",
     marginTop: 20,
-    padding:20,
-    elevation:10
-    
+    padding: 20,
+    elevation: 10,
   },
   postsList: {
-    flex: 1,
     width: "100%",
   },
   postsTitle: {
     fontSize: 35,
     fontWeight: "bold",
-    fontFamily: "calibri",
     marginBottom: 15,
     textAlign: "center",
-    color: "#FF4500", 
+    color: "#FF4500",
   },
   post: {
-    width: "95%", 
+    width: "95%",
     alignSelf: "center",
-    marginBottom: 20, 
+    marginBottom: 20,
     backgroundColor: "#FFFFFF",
-    borderRadius: 15, 
-    padding: 25, 
+    borderRadius: 15,
+    padding: 25,
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
-      height: 4, 
+      height: 4,
     },
     shadowOpacity: 0.3,
-    shadowRadius: 5, 
-    elevation: 10, 
+    shadowRadius: 5,
+    elevation: 10,
   },
   logout: {
     marginVertical: 20,
   },
   cantidadPosteos: {
     marginBottom: 15,
-    fontSize: 16, 
-    color: "#555555", 
+    fontSize: 16,
+    color: "#555555",
   },
-
   centeredView: {
     flex: 1,
     justifyContent: "center",
@@ -270,23 +279,23 @@ const styles = StyleSheet.create({
   modalView: {
     margin: 20,
     backgroundColor: "white",
-    borderRadius: 20, 
+    borderRadius: 20,
     padding: 35,
     alignItems: "center",
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
-      height: 4, 
+      height: 4,
     },
     shadowOpacity: 0.3,
-    shadowRadius: 5, 
-    elevation: 10, 
+    shadowRadius: 5,
+    elevation: 10,
   },
   modalText: {
     marginBottom: 15,
     textAlign: "center",
-    fontSize: 18, 
-    color: "#333333", 
+    fontSize: 18,
+    color: "#333333",
   },
   modalButtons: {
     flexDirection: "row",
@@ -294,16 +303,16 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   button: {
-    borderRadius: 10, 
+    borderRadius: 10,
     padding: 10,
     elevation: 2,
-    marginHorizontal: 10, 
+    marginHorizontal: 10,
   },
   buttonClose: {
     backgroundColor: "#2196F3",
   },
   buttonConfirm: {
-    backgroundColor: "#FF6347", 
+    backgroundColor: "#FF6347",
   },
   textStyle: {
     color: "white",
@@ -311,7 +320,3 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
 });
-
-
-
-

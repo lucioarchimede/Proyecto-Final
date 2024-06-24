@@ -87,7 +87,7 @@ class Search extends Component {
                                     data={this.state.filter1}
                                     keyExtractor={unUsuario => unUsuario.id}
                                     renderItem={({ item }) =>
-                                        <TouchableOpacity style={styles.botonUsuario} onPress={() => this.usuarioSeleccionado(item.data.owner)}>
+                                        <TouchableOpacity style={styles.botonUsuario} onPress={() => this.usuarioSeleccionado(item.data.email)}>
                                             <Text style={styles.usuario} >{item.data.owner}</Text>
                                         </TouchableOpacity>
                                     }
@@ -98,7 +98,7 @@ class Search extends Component {
                                     data={this.state.filter2}
                                     keyExtractor={unUsuario => unUsuario.id}
                                     renderItem={({ item }) =>
-                                        <TouchableOpacity style={styles.botonUsuario} onPress={() => this.usuarioSeleccionado(item.data.owner)}>
+                                        <TouchableOpacity style={styles.botonUsuario} onPress={() => this.usuarioSeleccionado(item.data.name)}>
                                             <Text style={styles.usuario} >{item.data.name}</Text>
                                         </TouchableOpacity>
                                     }
