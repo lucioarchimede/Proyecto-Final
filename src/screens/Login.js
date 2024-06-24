@@ -16,8 +16,11 @@ class Login extends Component {
   componentDidMount() {
     auth.onAuthStateChanged((user) => {
       if (user) {
-        console.log("este es el email logueado", auth.currentUser.email);
+        this.props.navigation.navigate("Home");
       }
+      this.setState({
+        logueado: true
+      })
     });
   }
 
@@ -92,39 +95,39 @@ class Login extends Component {
 
 const styles = StyleSheet.create({
   input: {
-    borderColor: "#FF4500", // Cambia el color del borde a un tono más vibrante
-    borderWidth: 2, // Aumenta el ancho del borde
-    borderRadius: 8, // Aumenta el radio del borde para esquinas más redondeadas
-    marginBottom: 20, // Ajusta el margen inferior
-    padding: 10, // Añade relleno interno para mejor apariencia
-    backgroundColor: "#FFF8DC", // Fondo color crema claro
-    shadowColor: "#000", // Añade sombra
-    shadowOffset: { width: 0, height: 2 }, // Offset de la sombra
-    shadowOpacity: 0.25, // Opacidad de la sombra
-    shadowRadius: 3.84, // Radio de la sombra
-    elevation: 5, // Elevación para Android
+    borderColor: "#FF4500", 
+    borderWidth: 2, 
+    borderRadius: 8, 
+    marginBottom: 20,
+    padding: 10, 
+    backgroundColor: "#FFF8DC",
+    shadowColor: "#000", 
+    shadowOffset: { width: 0, height: 2 }, 
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84, 
+    elevation: 5,
   },
   btn: {
-    backgroundColor: "#32CD32", // Un verde lima más llamativo
+    backgroundColor: "#32CD32", 
     textAlign: "center",
-    paddingVertical: 12, // Padding vertical aumentado
-    paddingHorizontal: 20, // Padding horizontal
-    borderRadius: 25, // Bordes completamente redondeados
-    shadowColor: "#000", // Añade sombra
-    shadowOffset: { width: 0, height: 4 }, // Offset de la sombra
-    shadowOpacity: 0.3, // Opacidad de la sombra
-    shadowRadius: 4.65, // Radio de la sombra
-    elevation: 8, // Elevación para Android
-    marginVertical: 10, // Margen vertical para separar de otros elementos
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 25, 
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 }, 
+    shadowOpacity: 0.3, 
+    shadowRadius: 4.65,
+    elevation: 8, 
+    marginVertical: 10, 
   },
   textBtn: {
-    color: "#FFF", // Color de texto blanco
-    fontWeight: "bold", // Texto en negrita
-    fontSize: 18, // Tamaño de fuente aumentado
-    letterSpacing: 1, // Espaciado entre letras
-    textShadowColor: "#000", // Sombra de texto
-    textShadowOffset: { width: 1, height: 1 }, // Offset de la sombra del texto
-    textShadowRadius: 2, // Radio de la sombra del texto
+    color: "#FFF", 
+    fontWeight: "bold", 
+    fontSize: 18, 
+    letterSpacing: 1, 
+    textShadowColor: "#000", 
+    textShadowOffset: { width: 1, height: 1 }, 
+    textShadowRadius: 2, 
   },
 });
 
