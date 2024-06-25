@@ -1,12 +1,5 @@
 import React, { Component } from "react";
-import {
-  Text,
-  View,
-  StyleSheet,
-  FlatList,
-  Image,
-  ScrollView,
-} from "react-native";
+import {Text,View,StyleSheet,FlatList,Image,ScrollView,} from "react-native";
 import { db } from "../firebase/config";
 import Posteo from "../components/Posteo";
 

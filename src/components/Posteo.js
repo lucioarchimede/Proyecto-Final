@@ -1,9 +1,7 @@
 import React, { Component } from "react";
 import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
-import { FontAwesome } from "@expo/vector-icons";
 import Like from "../components/Like"
 import { db, auth } from "../firebase/config";
-import firebase from "firebase";
 
 export default class Posteo extends Component {
   constructor(props) {
