@@ -17,12 +17,15 @@ class MainNav extends Component {
     return (
       <NavigationContainer>
         <Stack.Navigator>
-          <Stack.Screen name='Register' component={Register} />
-          <Stack.Screen name='Login' component={Login}
-            options={{ headerShow: false }} />
+          <Stack.Screen name='Login' component={Login} />
+          
+        <Stack.Screen name='Register' component={Register} 
+         options={{ headerShow: false }}/>
+
           <Stack.Screen
             options={{ headerShow: false }}
             name='tabnav' component={TabNav} />
+
           <Stack.Screen
             name='Comentarios'
             component={Comentarios}

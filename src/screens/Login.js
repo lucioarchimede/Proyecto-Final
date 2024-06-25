@@ -6,6 +6,7 @@ class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      logueado: false,
       name: "",
       password: "",
       email: "",
@@ -16,7 +17,7 @@ class Login extends Component {
   componentDidMount() {
     auth.onAuthStateChanged((user) => {
       if (user) {
-        this.props.navigation.navigate("Home");
+        this.props.navigation.navigate("tabnav");
       }
       this.setState({
         logueado: true
